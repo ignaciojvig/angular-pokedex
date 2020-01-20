@@ -1,0 +1,30 @@
+.search-pokemon-row {
+  margin: 1vh 0;
+  margin-bottom: 2em;
+}
+
+.meowth-icon {
+  transform: scale(3);
+  width: 1em;
+  position: absolute;
+  z-index: 1;
+  top: -0.8em;
+}
+
+.inside-column-align {
+  display: flex;
+  justify-content: center;
+}
+
+#search-field {
+  width: 90%;
+}
+
+.pokelist-container {
+  margin: 0 2em;
+}
+
+.pokelist-row {
+  justify-content: space-around;
+  margin-bottom: 1em;
+}

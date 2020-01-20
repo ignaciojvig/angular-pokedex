@@ -1,0 +1,31 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.hidden {
+  display: none;
+}
+
+#pokedexIcon {
+  transform: scale(1);
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.title {
+  width: 10em;
+  display: flex;
+  align-items: center;
+}

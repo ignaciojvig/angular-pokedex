@@ -1,0 +1,15 @@
+@import "~@angular/material/theming";
+
+@include mat-core();
+
+// https://github.com/angular/components/blob/master/src/material/core/theming/_palette.scss
+
+$pokemon-app-primary: mat-palette($mat-red, 700, 400, 800);
+
+$pokemon-app-accent: mat-palette($mat-purple);
+
+$pokemon-app-warn: mat-palette($mat-yellow, A200);
+
+$pokemon-app-theme: mat-light-theme($pokemon-app-primary, $pokemon-app-accent, $pokemon-app-warn);
+
+@include angular-material-theme($pokemon-app-theme);
