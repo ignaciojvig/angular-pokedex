@@ -82,7 +82,17 @@ export class MainScreenComponent implements OnInit {
           (res: PokemonList) => {
 
             res.results = res.results
-              .filter(x => x.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) || x.url.includes(searchValue));
+              .filter(x => {
+                const converted = Number(searchValue);
+
+                if (isNaN(converted)) {
+                  return x.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase());
+                } else {
+                  return x.url.includes(searchValue);
+                }
+
+              });
+
             this.UrlParamOffset = 0;
             this.searchMode = true;
             this.searchModePokemonIndexesList = res;
