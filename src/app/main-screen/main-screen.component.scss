@@ -27,4 +27,29 @@
 .pokelist-row {
   justify-content: space-around;
   margin-bottom: 1em;
+  width: 100%;
+}
+
+.mat-card {
+  width: inherit;
+  margin-bottom: 1em;
+}
+
+.pokemon-image-container {
+  display: flex;
+  justify-content: center;
+}
+
+.mat-card-image {
+  width: 50%;
+  height: 50%;
+}
+
+.pagination-buttons {
+  justify-content: center;
+  margin-bottom: 2em;
+}
+
+.pag-button {
+  margin: 0 1em;
 }

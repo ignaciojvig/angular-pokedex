@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { PokemonList } from '../domain/pokemon-list.schema';
 import { throwError } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
@@ -17,8 +17,12 @@ export class MainScreenComponent implements OnInit {
 
   pokemonApiUrl = 'https://pokeapi.co/api/v2/pokemon/';
   pokemonApiUrlParams = '?offset=0&limit=10';
+
+  UrlParamOffset = 0;
+  UrlParamLimit = 10;
   pokemonIndexesList: PokemonList;
-  pokemonFullDataList: PokemonFullData[] = [];
+  pokemonFirstRow: PokemonFullData[] = [];
+  pokemonSecondRow: PokemonFullData[] = [];
 
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, private http: HttpClient) {
     this.registerSvgIcon(iconRegistry, sanitizer);
@@ -41,7 +45,11 @@ export class MainScreenComponent implements OnInit {
   }
 
   async loadPokemonBaseInfo() {
-    return await this.http.get(this.pokemonApiUrl + this.pokemonApiUrlParams)
+    let params = new HttpParams();
+    params = params.set('offset', this.UrlParamOffset.toString());
+    params = params.set('limit', this.UrlParamLimit.toString());
+
+    return await this.http.get(this.pokemonApiUrl, { params })
       .pipe(
         tap((x: PokemonList) => this.pokemonIndexesList = x),
         catchError(this.handleError))
@@ -49,8 +57,10 @@ export class MainScreenComponent implements OnInit {
   }
 
   async loadPokemonCompleteData() {
-    this.pokemonFullDataList = await Promise.all(this.pokemonIndexesList.results.map(x => this.requestPokemonData(x)));
-    console.log(this.pokemonFullDataList);
+    const pokemonFullDataList = await Promise.all(this.pokemonIndexesList.results.map(x => this.requestPokemonData(x)));
+
+    this.pokemonFirstRow = pokemonFullDataList.slice(0, 5);
+    this.pokemonSecondRow = pokemonFullDataList.slice(5);
   }
 
   requestPokemonData(x: PokemonNameAndUrl): Promise<PokemonFullData> {
@@ -74,10 +84,21 @@ export class MainScreenComponent implements OnInit {
     return throwError(errorMessage);
   }
 
-  camelize(str) {
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    }).replace(/\s+/g, '');
+  toCamelCase(str: string) {
+    return str.charAt(0).toLocaleUpperCase() + str.slice(1).toLowerCase();
+  }
+
+  goToNextPage() {
+    this.UrlParamOffset += 10;
+    this.loadPokemonData();
+  }
+
+  goToPreviousPage() {
+    if (this.UrlParamOffset !== 0) {
+      this.UrlParamOffset -= 10;
+    }
+
+    this.loadPokemonData();
   }
 
 }
