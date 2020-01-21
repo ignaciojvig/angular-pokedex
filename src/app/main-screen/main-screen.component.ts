@@ -7,6 +7,8 @@ import { throwError } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
 import { PokemonFullData } from '../domain/pokemon-full-data.schema';
 import { PokemonNameAndUrl } from '../domain/pokemon-name-url.schema';
+import { MatDialog } from '@angular/material/dialog';
+import { DetailsComponent } from './details/details.component';
 
 @Component({
   selector: 'app-main-screen',
@@ -15,16 +17,23 @@ import { PokemonNameAndUrl } from '../domain/pokemon-name-url.schema';
 })
 export class MainScreenComponent implements OnInit {
 
+  searchTypeTimeout;
+  searchMode = false;
+
   pokemonApiUrl = 'https://pokeapi.co/api/v2/pokemon/';
-  pokemonApiUrlParams = '?offset=0&limit=10';
 
   UrlParamOffset = 0;
   UrlParamLimit = 10;
   pokemonIndexesList: PokemonList;
+  searchModePokemonIndexesList: PokemonList;
   pokemonFirstRow: PokemonFullData[] = [];
   pokemonSecondRow: PokemonFullData[] = [];
 
-  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, private http: HttpClient) {
+  constructor(
+    iconRegistry: MatIconRegistry,
+    sanitizer: DomSanitizer,
+    private http: HttpClient,
+    private dialog: MatDialog) {
     this.registerSvgIcon(iconRegistry, sanitizer);
     this.loadPokemonData();
   }
@@ -36,6 +45,10 @@ export class MainScreenComponent implements OnInit {
     iconRegistry.addSvgIcon(
       'meowth',
       sanitizer.bypassSecurityTrustResourceUrl('assets/meowth.svg'));
+
+    iconRegistry.addSvgIcon(
+      'egg',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/egg.svg'));
   }
 
   loadPokemonData() {
@@ -44,7 +57,51 @@ export class MainScreenComponent implements OnInit {
     });
   }
 
+  searchAfterType(searchValue: string) {
+    if (this.searchTypeTimeout) {
+      clearTimeout(this.searchTypeTimeout);
+    }
+
+    this.searchTypeTimeout = setTimeout(async () => {
+
+      if (searchValue === '') {
+        this.UrlParamOffset = 0;
+        this.searchMode = false;
+        this.loadPokemonData();
+        return;
+      }
+
+      let params = new HttpParams();
+      params = params.set('offset', 0 + '');
+      params = params.set('limit', 964 + '');
+
+      return await this.http.get(this.pokemonApiUrl, { params })
+        .pipe(
+          catchError(this.handleError))
+        .subscribe(
+          (res: PokemonList) => {
+
+            res.results = res.results
+              .filter(x => x.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) || x.url.includes(searchValue));
+            this.UrlParamOffset = 0;
+            this.searchMode = true;
+            this.searchModePokemonIndexesList = res;
+            this.loadPokemonData();
+
+          }
+        );
+    }, 3000);
+  }
+
   async loadPokemonBaseInfo() {
+
+    if (this.searchMode) {
+      const copiedResults = { ...this.searchModePokemonIndexesList };
+      copiedResults.results = copiedResults.results.slice(this.UrlParamOffset);
+      this.pokemonIndexesList = copiedResults;
+      return new Promise((resolve) => { resolve(); });
+    }
+
     let params = new HttpParams();
     params = params.set('offset', this.UrlParamOffset.toString());
     params = params.set('limit', this.UrlParamLimit.toString());
@@ -57,7 +114,9 @@ export class MainScreenComponent implements OnInit {
   }
 
   async loadPokemonCompleteData() {
-    const pokemonFullDataList = await Promise.all(this.pokemonIndexesList.results.map(x => this.requestPokemonData(x)));
+    const toBeLoadedPokemons = this.pokemonIndexesList.results.slice(0, 10);
+    console.log(toBeLoadedPokemons);
+    const pokemonFullDataList = await Promise.all(toBeLoadedPokemons.map(x => this.requestPokemonData(x)));
 
     this.pokemonFirstRow = pokemonFullDataList.slice(0, 5);
     this.pokemonSecondRow = pokemonFullDataList.slice(5);
@@ -99,6 +158,27 @@ export class MainScreenComponent implements OnInit {
     }
 
     this.loadPokemonData();
+  }
+
+  openDetails(pokemon: PokemonFullData) {
+    this.dialog.open(DetailsComponent, { data: pokemon, maxHeight: '90vh', maxWidth: '50vw' });
+  }
+
+  addToCapturedPokemons(pokemon: PokemonFullData) {
+
+    let capturedPokemons = JSON.parse(localStorage.getItem('captured-pokemons')) as Array<PokemonFullData>;
+    if (!capturedPokemons) {
+      capturedPokemons = [];
+    }
+
+    const alreadyAdded = capturedPokemons.find(x => x.id === pokemon.id);
+    if (!alreadyAdded) {
+      capturedPokemons.push(pokemon);
+    } else {
+      capturedPokemons = capturedPokemons.filter(x => x.id !== pokemon.id);
+    }
+
+    localStorage.setItem('captured-pokemons', JSON.stringify(capturedPokemons));
   }
 
 }

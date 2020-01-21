@@ -1,0 +1,41 @@
+<div class="container-fluid">
+    <div class="row">
+        <p> Name: {{ toCamelCase(data.name) }} </p>
+    </div>
+
+    <div class="row img-row">
+        <p> Images: </p>
+        <div class="row">
+            <img *ngFor="let image of pokeImgList" src="{{ image }}" alt="Image of a {{data.name}}">
+        </div>
+    </div>
+
+    <div class="row">
+        <p> Height (decimetres): {{ data.height }} </p>
+    </div>
+
+    <div class="row">
+        <p> Weight (hectograms): {{ data.weight }} </p>
+    </div>
+
+    <div class="row">
+        <p> Types: {{ getPokemonTypeList() }} </p>
+    </div>
+
+    <div class="row">
+        <p> Speed: {{ getPokemonSpecificStat('speed') }} </p>
+    </div>
+
+    <div class="row">
+        <p> Defense: {{ getPokemonSpecificStat('defense') }} </p>
+    </div>
+
+    <div class="row">
+        <p> Attack: {{ getPokemonSpecificStat('attack') }} </p>
+    </div>
+
+    <div class="row">
+        <p> HP: {{ getPokemonSpecificStat('hp') }} </p>
+    </div>
+
+</div>

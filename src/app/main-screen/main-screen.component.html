@@ -2,7 +2,8 @@
     <div class="row search-pokemon-row">
         <div class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-10 offset-1 inside-column-align">
             <mat-form-field id="search-field">
-                <input type="text" matInput placeholder="Which pokemon are you looking for?">
+                <input type="text" matInput (input)="searchAfterType($event.target.value)"
+                    placeholder="Which pokemon are you looking for?">
                 <mat-hint><strong>Pikachu, right? Everyone always search for him</strong> </mat-hint>
                 <mat-icon matSuffix class="meowth-icon" inline="true" svgIcon="meowth" aria-hidden="false">
                 </mat-icon>
@@ -19,11 +20,19 @@
                 <mat-card class="example-card">
                     <mat-card-header>
 
-                        <mat-card-title> {{ toCamelCase(pokemon.name) }} </mat-card-title>
+                        <mat-card-title class="card-title" matTooltip="{{ toCamelCase(pokemon.name) }}"
+                            matTooltipPosition="right">
+                            {{ toCamelCase(pokemon.name) }}
+                        </mat-card-title>
                         <mat-card-subtitle> # {{ pokemon.id }} </mat-card-subtitle>
                     </mat-card-header>
                     <div class="pokemon-image-container">
-                        <img mat-card-image src="{{pokemon.sprites.front_default}}" alt="Photo of a Shiba Inu">
+                        <div *ngIf="pokemon.sprites.front_default === null">
+                            <mat-icon class="mat-card-image not-found-images" svgIcon="egg" aria-hidden="false">
+                            </mat-icon>
+                        </div>
+                        <img *ngIf="pokemon.sprites.front_default !== null" mat-card-image
+                            src="{{ pokemon.sprites.front_default }}" alt="Image of a {{pokemon.name}}">
                     </div>
                     <mat-card-content>
                         <mat-chip-list>
@@ -31,8 +40,10 @@
                         </mat-chip-list>
                     </mat-card-content>
                     <mat-card-actions>
-                        <button mat-button>LIKE</button>
-                        <button mat-button>SHARE</button>
+                        <div class="card-options">
+                            <button mat-button mat-flat-button (click)="openDetails(pokemon)"> Details </button>
+                            <button mat-button mat-flat-button> + </button>
+                        </div>
                     </mat-card-actions>
                 </mat-card>
 
@@ -47,11 +58,19 @@
                 <mat-card class="example-card">
                     <mat-card-header>
 
-                        <mat-card-title> {{ toCamelCase(pokemon.name) }} </mat-card-title>
+                        <mat-card-title class="card-title" matTooltip="{{ toCamelCase(pokemon.name) }}"
+                            matTooltipPosition="right">
+                            {{ toCamelCase(pokemon.name) }}
+                        </mat-card-title>
                         <mat-card-subtitle> # {{ pokemon.id }} </mat-card-subtitle>
                     </mat-card-header>
                     <div class="pokemon-image-container">
-                        <img mat-card-image src="{{pokemon.sprites.front_default}}" alt="Photo of a Shiba Inu">
+                        <div *ngIf="pokemon.sprites.front_default === null">
+                            <mat-icon class="mat-card-image not-found-images" svgIcon="egg" aria-hidden="false">
+                            </mat-icon>
+                        </div>
+                        <img *ngIf="pokemon.sprites.front_default !== null" mat-card-image
+                            src="{{ pokemon.sprites.front_default }}" alt="Image of a {{pokemon.name}}">
                     </div>
                     <mat-card-content>
                         <mat-chip-list>
@@ -59,8 +78,10 @@
                         </mat-chip-list>
                     </mat-card-content>
                     <mat-card-actions>
-                        <button mat-button>LIKE</button>
-                        <button mat-button>SHARE</button>
+                        <div class="card-options">
+                            <button mat-button mat-flat-button (click)="openDetails(pokemon)"> Details </button>
+                            <button mat-button mat-flat-button (click)="addToCapturedPokemons(pokemon)"> + </button>
+                        </div>
                     </mat-card-actions>
                 </mat-card>
 
@@ -78,7 +99,8 @@
 
         </button>
 
-        <button class="pag-button" mat-flat-button color="primary" (click)="goToNextPage()">
+        <button class="pag-button" mat-flat-button color="primary"
+            [disabled]="pokemonFirstRow.length + pokemonSecondRow.length !== 10" (click)="goToNextPage()">
             &gt;
         </button>
 

@@ -41,13 +41,31 @@
 }
 
 .mat-card-image {
-  width: 50%;
-  height: 50%;
+  width: 6em;
+  height: 6em;
 }
 
 .pagination-buttons {
   justify-content: center;
   margin-bottom: 2em;
+}
+
+.card-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-title {
+  overflow: hidden;
+  white-space: nowrap;
+  margin-top: 0;
+  text-overflow: ellipsis;
+  width: 100px;
+  margin-bottom: 1rem;
+}
+
+.not-found-images {
+  transform: scale(0.6);
 }
 
 .pag-button {
