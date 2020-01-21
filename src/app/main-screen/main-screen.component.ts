@@ -181,4 +181,18 @@ export class MainScreenComponent implements OnInit {
     localStorage.setItem('captured-pokemons', JSON.stringify(capturedPokemons));
   }
 
+  checkIfItsIncluded(pokemon: PokemonFullData) {
+    let capturedPokemons = JSON.parse(localStorage.getItem('captured-pokemons')) as Array<PokemonFullData>;
+    if (!capturedPokemons) {
+      capturedPokemons = [];
+    }
+
+    const alreadyAdded = capturedPokemons.find(x => x.id === pokemon.id);
+    if (!alreadyAdded) {
+      return '+';
+    } else {
+      return '-';
+    }
+  }
+
 }

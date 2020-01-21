@@ -42,7 +42,8 @@
                     <mat-card-actions>
                         <div class="card-options">
                             <button mat-button mat-flat-button (click)="openDetails(pokemon)"> Details </button>
-                            <button mat-button mat-flat-button> + </button>
+                            <button mat-button mat-flat-button (click)="addToCapturedPokemons(pokemon)">
+                                {{ checkIfItsIncluded(pokemon) }} </button>
                         </div>
                     </mat-card-actions>
                 </mat-card>
@@ -80,7 +81,8 @@
                     <mat-card-actions>
                         <div class="card-options">
                             <button mat-button mat-flat-button (click)="openDetails(pokemon)"> Details </button>
-                            <button mat-button mat-flat-button (click)="addToCapturedPokemons(pokemon)"> + </button>
+                            <button mat-button mat-flat-button (click)="addToCapturedPokemons(pokemon)">
+                                {{ checkIfItsIncluded(pokemon) }} </button>
                         </div>
                     </mat-card-actions>
                 </mat-card>

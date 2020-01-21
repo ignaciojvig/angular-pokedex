@@ -16,6 +16,10 @@ export class MainNavComponent {
     iconRegistry.addSvgIcon(
       'pokedex',
       sanitizer.bypassSecurityTrustResourceUrl('assets/pokedex.svg'));
+
+    iconRegistry.addSvgIcon(
+      'star',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/star.svg'));
   }
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)

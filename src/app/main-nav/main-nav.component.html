@@ -4,9 +4,7 @@
     [ngClass]="{hidden: !(isHandset$ | async)}">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <a mat-list-item routerLink="/collection">My Collection</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -15,9 +13,19 @@
         *ngIf="isHandset$ | async">
         <mat-icon [inline]="true" aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <div class="title">
-        Angular Pokedex <mat-icon id="pokedexIcon" svgIcon="pokedex" aria-hidden="false" inline=true> </mat-icon>
+
+      <div class="top-menu-options">
+
+        <div class="title" routerLink="">
+          Angular Pokedex <mat-icon id="pokedexIcon" svgIcon="pokedex" aria-hidden="false" inline=true> </mat-icon>
+        </div>
+
+        <div [ngClass]="{hidden: !(isHandset$ | async)}" class="my-collection" routerLink="/collection">
+          My Collection <mat-icon id="my-collectionIcon" svgIcon="star" aria-hidden="false" inline=true></mat-icon>
+        </div>
+
       </div>
+
     </mat-toolbar>
     <ng-content> </ng-content>
   </mat-sidenav-content>

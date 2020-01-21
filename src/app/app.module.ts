@@ -8,16 +8,17 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MainScreenComponent } from './main-screen/main-screen.component';
 import { MaterialModule } from './material/app.material.module';
-import { IconCreditsComponent } from './icon-credits/icon-credits.component';
 import { DetailsComponent } from './main-screen/details/details.component';
+import { CollectionComponent, RemoveFromCollectionConfirmationDialogComponent } from './collection/collection.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainNavComponent,
     MainScreenComponent,
-    IconCreditsComponent,
-    DetailsComponent
+    DetailsComponent,
+    CollectionComponent,
+    RemoveFromCollectionConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +27,7 @@ import { DetailsComponent } from './main-screen/details/details.component';
     MaterialModule,
     HttpClientModule
   ],
-  entryComponents: [DetailsComponent],
+  entryComponents: [DetailsComponent, RemoveFromCollectionConfirmationDialogComponent],
   providers: [],
   bootstrap: [AppComponent]
 })
